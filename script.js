@@ -2,21 +2,32 @@
 const notes = document.querySelector('.notes')
 const formBtn = document.querySelector('.form-btn')
 const submitItem = document.querySelector('.item-sub-btn')
+const submitProject = document.querySelector('.project-sub-btn')
 const addProject = document.querySelector('.add-project')
 const formItem = document.querySelector('.item-form-container')
 const formProj = document.querySelector('.project-form-container')
-const projectsAdded = ["dummy", "ipsum lorem", "foo bar"]
+const tasksAdded = []
+const projectsAdded = []
 
-// function toggleForm(form) {
-//     console.log("fired")
-//     if (form.style.display === "block") {
-//         form.style.display = "none";
-//       } else {
-//         form.style.display = "block";
-//   }
-// }
-// formBtn.addEventListener('click', toggleForm.bind(formItem))
-// addProject.addEventListener('click', toggleForm.bind(formProj))
+function toggleItemForm() {
+
+    if (formItem.style.display === "block") {
+        formItem.style.display = "none";
+      } else {
+        formItem.style.display = "block";
+  }
+}
+
+function toggleProjectForm() {
+
+    if (formProj.style.display === "block") {
+        formProj.style.display = "none";
+      } else {
+        formProj.style.display = "block";
+  }
+}
+formBtn.addEventListener('click', toggleItemForm)
+addProject.addEventListener('click', toggleProjectForm)
 
 function createProject(title) {
     return {
@@ -26,17 +37,53 @@ function createProject(title) {
 }
 
 
+function createItem(title, description, dueDate, priority, project) {
+    const task = createTask(title, description, dueDate, priority, project)
+    if (project == "None") {
+        misc.push(task) } 
+    else {
+        const projectSelected = projectsAdded.find(element => element.title == project.value)
+        projectSelected.tasks.push(task)
+    }
+console.log("projects added" + projectsAdded)   
+
+
+}
+
+function createTask(title, description, dueDate, priority, project) {
+    return {
+        title: title,
+        description: description,
+        dueDate: dueDate,
+        priority: priority,
+        project: project,
+        complete: false,
+        markComplete() {
+            complete = true;
+        }
+    
+        };
+      }    
+
+
+
 function projectInputToObject(e) {
     e.preventDefault();
+    console.log("project input button pressed")
     const output_info = document.querySelector(".project-form");
     const projectData = [...output_info.querySelectorAll("input:not([type=submit]), select")].map((item) => item.cloneNode(true));
     const newProject = createProject(projectData)
     projectsAdded.push(newProject)
+    console.log(projectsAdded)
 }
 
 
-createProject('misc')
-createProject('dummy')
+const misc = createProject('misc')
+const dummy = createProject('dummy')
+projectsAdded.push(dummy)
+projectsAdded.push(misc)
+
+//above dummy projects can be deleted later 
 
 // function addProject(title) {
 //     const project = project(title)
@@ -52,7 +99,10 @@ function itemInputToObject(e) {
     const value = x.value;
     const text = x.options[x.selectedIndex].text;
     console.log(value, text);
-    createItem(data[0], data[1], data[2], value, selectProject)
+    const item = createItem(data[0], data[1], data[2], value, selectProject)
+    tasksAdded.push(item)
+    displayProjects()
+
 }
 
    
@@ -70,53 +120,35 @@ if (projectsAdded.length > 0) {
         for (let i = 0; i < projectsAdded.length; i++) {
           
             projectNames[i] = document.createElement("option")
-            projectNames[i].text = projectsAdded[i]
+            projectNames[i].text = projectsAdded[i].title
             sel.appendChild(projectNames[i])
     }    
     
 }
+
+function displayProjects() {
+    for (let i = 0; i < projectsAdded.length; i++) {
+    
+        const card = document.createElement('div');
+        card.setAttribute('id', `card-${i}`) // assigns each card a unique id
+        card.className = "card"
+        const innercont = document.createElement("div")
+        const par1 = document.createElement("p")
+        const par2 = document.createElement("p")  
+        par1.innerText = "Tasks associated with project: " + projectsAdded[i].tasks[0];
+        par2.innerText = "Poject Title: " + projectsAdded[i].title; 
+        innercont.append(par1, par2) 
+        notes.appendChild(innercont)
+      }
+    }
+     
 
 
 
 
 
 submitItem.addEventListener('click', itemInputToObject.bind(event))    
-
-
-function createItem(title, description, dueDate, priority, project) {
-    const task = createTask(title, description, dueDate, priority, project)
-    if (project == "None") {
-        misc.push(task) } 
-    else {
-        project.push(task)
-    }
-console.log("projects added" + projectsAdded)   
-
-}
+submitProject.addEventListener('click', projectInputToObject.bind(event))    
 
 
 
-// const item = (title, description, dueDate, priority) => {
-//     const title = () => title;
-//     const description  = () => description;
-//     const dueDate = () => dueDate;
-//     let priority = () => priority;
-    
-//     }
-
-function createTask(title, description, dueDate, priority, project) {
-    return {
-        title: title,
-        description: description,
-        dueDate: dueDate,
-        priority: priority,
-        project: project,
-        complete: false,
-        markComplete() {
-            complete = true;
-        }
-        // getFullName() {
-        //     return firstName + ' ' + lastName;
-        //   },
-        };
-      }    
