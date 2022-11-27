@@ -39,14 +39,10 @@ function createProject(title) {
 
 function createItem(title, description, dueDate, priority, project) {
     const task = createTask(title, description, dueDate, priority, project)
-    if (project == "None") {
-        misc.push(task) } 
-    else {
-        const projectSelected = projectsAdded.find(element => element.title == project.value)
-        projectSelected.tasks.push(task)
-    }
-console.log("projects added" + projectsAdded)   
-
+    console.log("newly created task" + task.title)
+    const projectSelected = projectsAdded.find(element => element.title == project)
+    projectSelected.tasks.push(task)
+    tasksAdded.push(task)
 
 }
 
@@ -61,34 +57,24 @@ function createTask(title, description, dueDate, priority, project) {
         markComplete() {
             complete = true;
         }
-    
         };
       }    
 
-
-
 function projectInputToObject(e) {
     e.preventDefault();
-    console.log("project input button pressed")
     const output_info = document.querySelector(".project-form");
-    const projectData = [...output_info.querySelectorAll("input:not([type=submit]), select")].map((item) => item.cloneNode(true));
-    const newProject = createProject(projectData)
+    const projectData = output_info.querySelector("input:not([type=submit]), select");
+    console.log("project data", projectData.value)
+    const newProject = createProject(projectData.value)
     projectsAdded.push(newProject)
-    console.log(projectsAdded)
+    updateProjectSelect(newProject)
 }
 
-
 const misc = createProject('misc')
-const dummy = createProject('dummy')
-projectsAdded.push(dummy)
+
 projectsAdded.push(misc)
 
 //above dummy projects can be deleted later 
-
-// function addProject(title) {
-//     const project = project(title)
-//     projects.push(project)
-// }
 
 function itemInputToObject(e) {
     e.preventDefault();
@@ -97,52 +83,78 @@ function itemInputToObject(e) {
     const x = document.getElementById("priority");
     const selectProject = document.querySelector('.select-project')
     const value = x.value;
-    const text = x.options[x.selectedIndex].text;
-    console.log(value, text);
-    const item = createItem(data[0], data[1], data[2], value, selectProject)
-    tasksAdded.push(item)
-    displayProjects()
-
+    // const text = x.options[x.selectedIndex].text;
+    createItem(data[0].value, data[1].value, data[2].value, value, selectProject.value)
 }
 
-   
+
+const projects = document.querySelector('.optional-projects')    
+const sel = document.createElement("select")
+sel.classList.add("select-project")
+
+
+
+
+
 //user interface 
-if (projectsAdded.length > 0) {
-    const projects = document.querySelector('.optional-projects')
-    projects.textContent = "Add to project?"
-    const sel = document.createElement("select")
-    sel.classList.add("select-project")
-    const opt = document.createElement("option")
-    opt.text = "None"
-    sel.appendChild(opt)
-    projects.appendChild(sel)
-    let projectNames = []
-        for (let i = 0; i < projectsAdded.length; i++) {
-          
-            projectNames[i] = document.createElement("option")
-            projectNames[i].text = projectsAdded[i].title
-            sel.appendChild(projectNames[i])
-    }    
+
+function updateProjectSelect(project) { 
+    if (projectsAdded.length > 0) { //maybe re-write this later so there is always a "none" project and the dropdown exists with 1 option 
+        projects.textContent = "Add to project?"
+        projects.appendChild(sel)
+        let projectNames = []
     
+        for (let i = 0; i < projectsAdded.length; i++) {
+                projectNames[i] = document.createElement("option")
+                projectNames[i].text = projectsAdded[i].title
+                sel.appendChild(projectNames[i])
+        }    
+    }
+     else 
+        { projects.textContent = "No current projects to display" }
 }
 
+updateProjectSelect()
+const innercont = document.createElement("div")
+
+function displayTasks() {
+
+    tasksAdded.forEach(element => console.log(element.title))
+
+}
 function displayProjects() {
     for (let i = 0; i < projectsAdded.length; i++) {
-    
+        innercont.text = " "
         const card = document.createElement('div');
         card.setAttribute('id', `card-${i}`) // assigns each card a unique id
         card.className = "card"
-        const innercont = document.createElement("div")
         const par1 = document.createElement("p")
         const par2 = document.createElement("p")  
-        par1.innerText = "Tasks associated with project: " + projectsAdded[i].tasks[0];
-        par2.innerText = "Poject Title: " + projectsAdded[i].title; 
+        const projectTasks = projectsAdded[i].tasks.map(element => element.title)
+        par1.innerText = "Tasks associated with project: " + projectTasks;
+        par2.innerText = "Project Title: " + projectsAdded[i].title; 
         innercont.append(par1, par2) 
         notes.appendChild(innercont)
+        console.log(tasksAdded)
       }
     }
      
-
+function buildTaskInterface() {
+    for (let i = 0; i < tasksAdded.length; i++) {
+        const taskCard = document.createElement('div')
+        taskCard.setAttribute('id', taskCard[i].title)
+        const taskContainer = document.createElement("div")
+        const par1 = document.createElement("p")
+        par1.innerText = "Task title: " + tasksAdded[i].title;
+        const par2 = document.createElement("p")
+        par2.innerText = "Description: " + tasksAdded[i].description;
+        const par3 = document.createElement("p")
+        par3.innerText = "Due date: " + tasksAdded[i].pages;
+        const par4 = document.createElement("p");
+        par4.setAttribute('id', `p-${i}`)
+        taskContainer.append(par1, par2, par3, par4) 
+    }
+}
 
 
 
