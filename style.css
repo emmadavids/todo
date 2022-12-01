@@ -1,3 +1,7 @@
 .item-form-container, .project-form-container {
     display: none;
 }
+
+.task-card {
+    border: 1px solid palevioletred;
+}

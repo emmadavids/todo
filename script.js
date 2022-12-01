@@ -6,6 +6,7 @@ const submitProject = document.querySelector('.project-sub-btn')
 const addProject = document.querySelector('.add-project')
 const formItem = document.querySelector('.item-form-container')
 const formProj = document.querySelector('.project-form-container')
+const tasksHolder = document.querySelector('.tasks-holder')
 const tasksAdded = []
 const projectsAdded = []
 
@@ -43,7 +44,14 @@ function createItem(title, description, dueDate, priority, project) {
     const projectSelected = projectsAdded.find(element => element.title == project)
     projectSelected.tasks.push(task)
     tasksAdded.push(task)
+    buildTaskInterface() 
 
+}
+
+let counter = 0
+function idGenerator() {
+    counter += 1;
+    return counter 
 }
 
 function createTask(title, description, dueDate, priority, project) {
@@ -54,7 +62,9 @@ function createTask(title, description, dueDate, priority, project) {
         priority: priority,
         project: project,
         complete: false,
+        id: idGenerator(),
         markComplete() {
+            console.log("shout")
             complete = true;
         }
         };
@@ -141,19 +151,40 @@ function displayProjects() {
      
 function buildTaskInterface() {
     for (let i = 0; i < tasksAdded.length; i++) {
+        console.log("function called")
         const taskCard = document.createElement('div')
-        taskCard.setAttribute('id', taskCard[i].title)
+        taskCard.setAttribute('id', tasksAdded[i].id)
+        taskCard.setAttribute('class', 'task-card')
+
         const taskContainer = document.createElement("div")
         const par1 = document.createElement("p")
-        par1.innerText = "Task title: " + tasksAdded[i].title;
         const par2 = document.createElement("p")
-        par2.innerText = "Description: " + tasksAdded[i].description;
         const par3 = document.createElement("p")
-        par3.innerText = "Due date: " + tasksAdded[i].pages;
         const par4 = document.createElement("p");
+        const par5 = document.createElement("p")
+
+        par1.innerText = "Task title: " + tasksAdded[i].title;
+        par2.innerText = "Description: " + tasksAdded[i].description;
+        par3.innerText = "Priority: " + tasksAdded[i].priority;
+        par5.innerText = "Due by: " + tasksAdded[i].dueDate;
         par4.setAttribute('id', `p-${i}`)
-        taskContainer.append(par1, par2, par3, par4) 
+        taskContainer.append(par1, par2, par3, par4, par5) 
+
+        const priorityButton = document.createElement("button");
+        priorityButton.textContent = "change priority"
+
+        if (tasksAdded[i].complete == true) {
+            par4.innerText = "Completed" }
+        else {
+            par4.innerText = "Incomplete"
+            const completeButton = document.createElement("button");
+            completeButton.textContent = "Mark as Complete"
+            completeButton.setAttribute('id', tasksAdded[i].id)
+            completeButton.addEventListener('click', (e) => tasksAdded[i].markComplete(e))
+            taskContainer.appendChild(completeButton)
     }
+    notes.appendChild(taskContainer)
+}
 }
 
 
