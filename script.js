@@ -8,7 +8,7 @@ const formItem = document.querySelector('.item-form-container')
 const formProj = document.querySelector('.project-form-container')
 const tasksHolder = document.querySelector('.tasks-holder')
 const tasksAdded = []
-const projectsAdded = []
+const projectsAdded = [{title: "Misc", tasks: []} ]
 
 function toggleItemForm() {
 
@@ -64,7 +64,6 @@ function createTask(title, description, dueDate, priority, project) {
         complete: false,
         id: idGenerator(),
         markComplete() {
-            console.log("shout")
             complete = true;
         }
         };
@@ -80,11 +79,6 @@ function projectInputToObject(e) {
     updateProjectSelect(newProject)
 }
 
-const misc = createProject('misc')
-
-projectsAdded.push(misc)
-
-//above dummy projects can be deleted later 
 
 function itemInputToObject(e) {
     e.preventDefault();
@@ -93,7 +87,6 @@ function itemInputToObject(e) {
     const x = document.getElementById("priority");
     const selectProject = document.querySelector('.select-project')
     const value = x.value;
-    // const text = x.options[x.selectedIndex].text;
     createItem(data[0].value, data[1].value, data[2].value, value, selectProject.value)
 }
 
@@ -109,7 +102,7 @@ sel.classList.add("select-project")
 //user interface 
 
 function updateProjectSelect(project) { 
-    if (projectsAdded.length > 0) { //maybe re-write this later so there is always a "none" project and the dropdown exists with 1 option 
+    if (projectsAdded.length > 0) { 
         projects.textContent = "Add to project?"
         projects.appendChild(sel)
         let projectNames = []
@@ -124,8 +117,10 @@ function updateProjectSelect(project) {
         { projects.textContent = "No current projects to display" }
 }
 
-updateProjectSelect()
+
 const innercont = document.createElement("div")
+
+
 
 function displayTasks() {
 
@@ -148,6 +143,8 @@ function displayProjects() {
         console.log(tasksAdded)
       }
     }
+
+displayProjects()    
      
 function buildTaskInterface() {
     for (let i = 0; i < tasksAdded.length; i++) {
