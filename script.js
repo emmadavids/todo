@@ -87,6 +87,7 @@ function itemInputToObject(e) {
     const x = document.getElementById("priority");
     const selectProject = document.querySelector('.select-project')
     const value = x.value;
+
     createItem(data[0].value, data[1].value, data[2].value, value, selectProject.value)
 }
 
@@ -144,16 +145,19 @@ function displayProjects() {
       }
     }
 
-displayProjects()    
+// displayProjects()    
+updateProjectSelect()
      
 function buildTaskInterface() {
     for (let i = 0; i < tasksAdded.length; i++) {
         console.log("function called")
-        const taskCard = document.createElement('div')
-        taskCard.setAttribute('id', tasksAdded[i].id)
-        taskCard.setAttribute('class', 'task-card')
+        // const taskCard = document.createElement('div')
+        // taskCard.setAttribute('id', tasksAdded[i].id)
+        // taskCard.setAttribute('class', 'rainbow-box')
 
         const taskContainer = document.createElement("div")
+        taskContainer.setAttribute('id', tasksAdded[i].id)
+        taskContainer.setAttribute('class', 'rainbow-box')
         const par1 = document.createElement("p")
         const par2 = document.createElement("p")
         const par3 = document.createElement("p")

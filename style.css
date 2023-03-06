@@ -5,6 +5,15 @@
     font-size: medium;
 }
 
+body {
+    background-color: #111;
+    color:rgb(255, 255, 255);
+    height: 100%;
+
+
+}
+
+
 .button-85 {
   padding: 0.6em 2em;
   border: none;
@@ -60,6 +69,16 @@
   }
 }
 
+.rainbow-box {
+    background-color: black;
+    border: 5px solid transparent;
+    border-image: linear-gradient(to bottom right, #b827fc 0%, #2c90fc 25%, #b8fd33 50%, #fec837 75%, #fd1892 100%);
+    border-image-slice: 1;
+    height: 270px;
+    margin: 20px auto;
+    width: 220px;
+  }
+
 .button-85:after {
   z-index: -1;
   content: "";
@@ -74,6 +93,7 @@
 
 .item-form-container, .project-form-container {
     display: none;
+    margin-top: 40px;
 }
 
 .task-card {
@@ -83,3 +103,10 @@
 .task-toggle {
     display: none;
 }
+
+input[type=text] {
+    width: 60%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+  }
