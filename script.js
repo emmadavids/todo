@@ -6,9 +6,14 @@ const submitProject = document.querySelector('.project-sub-btn')
 const addProject = document.querySelector('.add-project')
 const formItem = document.querySelector('.item-form-container')
 const formProj = document.querySelector('.project-form-container')
+const mainBit = document.querySelector('.main-bit')
 const tasksHolder = document.querySelector('.tasks-holder')
 const tasksAdded = []
 const projectsAdded = [{title: "Misc", tasks: []} ]
+const projectList = document.querySelector('.list-project')
+
+
+
 
 function toggleItemForm() {
 
@@ -123,6 +128,8 @@ const innercont = document.createElement("div")
 
 
 
+
+
 function displayTasks() {
 
     tasksAdded.forEach(element => console.log(element.title))
@@ -147,14 +154,14 @@ function displayProjects() {
 
 // displayProjects()    
 updateProjectSelect()
+
+
+
      
 function buildTaskInterface() {
     for (let i = 0; i < tasksAdded.length; i++) {
         console.log("function called")
-        // const taskCard = document.createElement('div')
-        // taskCard.setAttribute('id', tasksAdded[i].id)
-        // taskCard.setAttribute('class', 'rainbow-box')
-
+  
         const taskContainer = document.createElement("div")
         taskContainer.setAttribute('id', tasksAdded[i].id)
         taskContainer.setAttribute('class', 'rainbow-box')
@@ -170,6 +177,7 @@ function buildTaskInterface() {
         par5.innerText = "Due by: " + tasksAdded[i].dueDate;
         par4.setAttribute('id', `p-${i}`)
         taskContainer.append(par1, par2, par3, par4, par5) 
+        
 
         const priorityButton = document.createElement("button");
         priorityButton.textContent = "change priority"
@@ -181,7 +189,11 @@ function buildTaskInterface() {
             const completeButton = document.createElement("button");
             completeButton.textContent = "Mark as Complete"
             completeButton.setAttribute('id', tasksAdded[i].id)
-            completeButton.addEventListener('click', (e) => tasksAdded[i].markComplete(e))
+            completeButton.addEventListener('click', (e) => {
+                tasksAdded[i].markComplete(e)
+                par4.innerText = "Completed"
+                completeButton.remove()
+            })
             taskContainer.appendChild(completeButton)
     }
     notes.appendChild(taskContainer)
@@ -195,4 +207,16 @@ submitItem.addEventListener('click', itemInputToObject.bind(event))
 submitProject.addEventListener('click', projectInputToObject.bind(event))    
 
 
+function listProjects() {
+    mainBit.innerText = " "
+    projectsAdded.forEach((element) => {
+        mainBit.append(element.title)
 
+        
+      });
+}
+
+
+
+
+projectList.addEventListener('click', listProjects)
