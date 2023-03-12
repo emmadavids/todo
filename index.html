@@ -1,50 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To do list</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To do list</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 </head> 
 <body> 
-    <button class="button-85 list-project">List Projects</button>
+  <header> To-do list</header>
+  <div class="sidebar">
+  
+    <button class="button-85 add-project">List Tasks</button>
     <button class="button-85 add-project">New Project</button>
     <button class="button-85 form-btn">New Task</button> 
-    <div class="main-bit">
     <div class="project-form-container">
-        <form class="project-form">
-            <label for="title">Title of Project:</label><br>
-            <input type="text" id="title" name="title" value="Title"><br>
-            <input class="project-sub-btn" type="submit" value="Add Project">
-        </form>
+      <form class="project-form">
+        <label for="title">Title of Project:</label><br>
+        <input type="text" id="title" name="title" value="Title"><br>
+        <input class="project-sub-btn button-85" type="submit" value="Add Project">
+      </form>
+      <br>
+    
+      <b><u>Projects:</u></b>
     </div>
-   
+  </div>
+  <div class="main">  
     <div class="item-form-container">
     <form class="item-form">
-        <label for="title">Title:</label><br>
-        <input type="text" id="title" name="title" value="Title" required><br>
-        <label for="description">Description:</label><br>
-        <input type="text" id="description" name="description" value="Description" required><br><br>
-        <label for="due">Due Date:</label><br>
-        <input type="date" id="due" name="trip-start">
-        <label for="priority">Priority:</label><br>
-        <select id="priority" name="priority">
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
-          </select>
-         <div class="optional-projects"> 
-           
-         </div>   
-         <div class="tasks-holder"></div>
-         </select> 
-        <input class="button-85 item-sub-btn" type="submit" value="Add Item">
+      <label for="title">Title:</label><br>
+      <input type="text" id="title" name="title" value="Title" required><br>
+      <label for="description">Description:</label><br>
+      <input type="text" id="description" name="description" value="Description" required><br><br>
+      <label for="due">Due Date:</label><br>
+      <input type="date" id="due" name="trip-start">
+      <label for="priority">Priority:</label><br>
+      <select id="priority" name="priority">
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+      </select> 
+      <div class="optional-projects"></div>
+      <input class="button-85 item-sub-btn" type="submit" value="Add Item">
     </form>
-</div>
-</div>
-    <div class="notes"></div>
-  <footer> button css by css scan</footer> 
+    <div class="tasks-holder"></div>
+  </div>
+  <div class="notes"></div></div>
+ 
+
+  <footer>button css by css scan</footer> 
 </body>
 </html>

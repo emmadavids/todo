@@ -11,6 +11,7 @@ const tasksHolder = document.querySelector('.tasks-holder')
 const tasksAdded = []
 const projectsAdded = [{title: "Misc", tasks: []} ]
 const projectList = document.querySelector('.list-project')
+const sideBar = document.querySelector('.sidebar')
 
 
 
@@ -21,6 +22,7 @@ function toggleItemForm() {
         formItem.style.display = "none";
       } else {
         formItem.style.display = "block";
+        formProj.style.display = "none";
   }
 }
 
@@ -30,8 +32,25 @@ function toggleProjectForm() {
         formProj.style.display = "none";
       } else {
         formProj.style.display = "block";
+        formItem.style.display = "none";
   }
 }
+
+
+function listProjects(element) {
+    
+    
+       const listItem = document.createElement("li")
+       listItem.setAttribute('class', 'project-list-item')
+       listItem.innerText = element.title
+       sideBar.append(listItem)
+
+}
+
+listProjects(projectsAdded[0])
+
+
+
 formBtn.addEventListener('click', toggleItemForm)
 addProject.addEventListener('click', toggleProjectForm)
 
@@ -82,6 +101,9 @@ function projectInputToObject(e) {
     const newProject = createProject(projectData.value)
     projectsAdded.push(newProject)
     updateProjectSelect(newProject)
+    formProj.style.display = "none";
+    listProjects(newProject)
+    // formBtn.addEventListener('click', toggleItemForm)
 }
 
 
@@ -92,8 +114,11 @@ function itemInputToObject(e) {
     const x = document.getElementById("priority");
     const selectProject = document.querySelector('.select-project')
     const value = x.value;
-
     createItem(data[0].value, data[1].value, data[2].value, value, selectProject.value)
+    formItem.style.display = "none";
+    const taskAdded = document.createElement("p")
+    taskAdded.innerText = "Task added! Click 'New Task' to add another"
+    mainBit.appendChild(taskAdded)
 }
 
 
@@ -125,8 +150,6 @@ function updateProjectSelect(project) {
 
 
 const innercont = document.createElement("div")
-
-
 
 
 
@@ -205,16 +228,6 @@ function buildTaskInterface() {
 
 submitItem.addEventListener('click', itemInputToObject.bind(event))    
 submitProject.addEventListener('click', projectInputToObject.bind(event))    
-
-
-function listProjects() {
-    mainBit.innerText = " "
-    projectsAdded.forEach((element) => {
-        mainBit.append(element.title)
-
-        
-      });
-}
 
 
 
