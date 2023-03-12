@@ -10,9 +10,9 @@ const mainBit = document.querySelector('.main-bit')
 const tasksHolder = document.querySelector('.tasks-holder')
 const tasksAdded = []
 const projectsAdded = [{title: "Misc", tasks: []} ]
-const projectList = document.querySelector('.list-project')
+// const projectList = document.querySelector('.list-project')
 const sideBar = document.querySelector('.sidebar')
-
+const showTasks = document.querySelector('.show-tasks')
 
 
 
@@ -117,7 +117,6 @@ function itemInputToObject(e) {
     createItem(data[0].value, data[1].value, data[2].value, value, selectProject.value)
     formItem.style.display = "none";
     const taskAdded = document.createElement("p")
-    taskAdded.innerText = "Task added! Click 'New Task' to add another"
     mainBit.appendChild(taskAdded)
 }
 
@@ -223,6 +222,7 @@ function buildTaskInterface() {
 }
 }
 
+showTasks.addEventListener('click', buildTaskInterface)
 
 
 
@@ -232,4 +232,4 @@ submitProject.addEventListener('click', projectInputToObject.bind(event))
 
 
 
-projectList.addEventListener('click', listProjects)
+// projectList.addEventListener('click', listProjects)

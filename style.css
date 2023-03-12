@@ -18,6 +18,7 @@ body {
   padding: 0.6em 2em;
   margin: 10px;
   border: none;
+  width: 70%;
   outline: none;
   color: rgb(255, 255, 255);
   background: #111;
@@ -70,6 +71,9 @@ body {
   }
 }
 
+.pp {
+    margin-top: 424px;
+}
 .project-list-item {
     margin: 10px;
 }
@@ -81,7 +85,9 @@ body {
     border-image-slice: 1;
     height: 270px;
     margin: 20px auto;
-    width: 220px;
+    
+    float:left;
+    width: calc(33.33% - 40px);
   }
 
 .button-85:after {
@@ -99,6 +105,11 @@ body {
 .item-form-container, .project-form-container {
     display: none;
     margin-top: 40px;
+  
+}
+
+.item-form-container {
+    margin-left: 25px;
 }
 
 .task-card {
