@@ -204,8 +204,6 @@ function displayProjects() {
 updateProjectSelect()
 
 
-
-     
 function buildTaskInterface() {
     notes.innerHTML = "";
 
