@@ -6,7 +6,7 @@ const submitProject = document.querySelector('.project-sub-btn')
 const addProject = document.querySelector('.add-project')
 const formItem = document.querySelector('.item-form-container')
 const formProj = document.querySelector('.project-form-container')
-const mainBit = document.querySelector('.main-bit')
+const mainBit = document.querySelector('.main')
 const tasksHolder = document.querySelector('.tasks-holder')
 const tasksAdded = []
 const projectsAdded = [{title: "Misc", tasks: []} ]
@@ -17,7 +17,9 @@ const showTasks = document.querySelector('.show-tasks')
 
 
 function toggleItemForm() {
-
+    notes.innerText = " "
+    tasksHolder.style.display = " "
+    
     if (formItem.style.display === "block") {
         formItem.style.display = "none";
       } else {
@@ -37,15 +39,42 @@ function toggleProjectForm() {
 }
 
 
-function listProjects(element) {
-    
-    
-       const listItem = document.createElement("li")
-       listItem.setAttribute('class', 'project-list-item')
-       listItem.innerText = element.title
-       sideBar.append(listItem)
 
-}
+function listProjects(element) {
+    const listItem = document.createElement("li");
+    listItem.setAttribute("class", "project-list-item");
+    listItem.innerText = element.title;
+    sideBar.append(listItem);
+  
+    // Create a div to hold the task list
+    const taskListDiv = document.createElement("div");
+  
+    // When the list item is clicked, find all tasks associated with the project and append them to taskListDiv
+    listItem.addEventListener("click", () => {
+      const tasks = element.tasks;
+  
+      // Clear the taskListDiv
+      taskListDiv.innerHTML = "";
+  
+      if (tasks.length === 0) {
+        const taskItem = document.createElement("p");
+        taskItem.innerText = "No tasks associated with this project to display";
+        taskListDiv.appendChild(taskItem);
+      } else {
+        const taskList = document.createElement("ul");
+        tasks.forEach((task) => {
+          const taskItem = document.createElement("li");
+          taskItem.innerText = task.title;
+          taskList.appendChild(taskItem);
+        });
+        taskListDiv.appendChild(taskList);
+      }
+  
+      // Clear the mainBit div and add the taskListDiv to it
+      notes.innerHTML = "";
+      notes.appendChild(taskListDiv);
+    });
+  }
 
 listProjects(projectsAdded[0])
 
@@ -88,7 +117,7 @@ function createTask(title, description, dueDate, priority, project) {
         complete: false,
         id: idGenerator(),
         markComplete() {
-            complete = true;
+            this.complete = true;
         }
         };
       }    
@@ -103,7 +132,7 @@ function projectInputToObject(e) {
     updateProjectSelect(newProject)
     formProj.style.display = "none";
     listProjects(newProject)
-    // formBtn.addEventListener('click', toggleItemForm)
+    
 }
 
 
@@ -127,12 +156,10 @@ sel.classList.add("select-project")
 
 
 
-
-
 //user interface 
 
-function updateProjectSelect(project) { 
-    if (projectsAdded.length > 0) { 
+function updateProjectSelect() { 
+    
         projects.textContent = "Add to project?"
         projects.appendChild(sel)
         let projectNames = []
@@ -142,9 +169,7 @@ function updateProjectSelect(project) {
                 projectNames[i].text = projectsAdded[i].title
                 sel.appendChild(projectNames[i])
         }    
-    }
-     else 
-        { projects.textContent = "No current projects to display" }
+  
 }
 
 
@@ -153,11 +178,12 @@ const innercont = document.createElement("div")
 
 
 function displayTasks() {
-
+    
     tasksAdded.forEach(element => console.log(element.title))
 
 }
 function displayProjects() {
+    toggleItemForm() 
     for (let i = 0; i < projectsAdded.length; i++) {
         innercont.text = " "
         const card = document.createElement('div');
@@ -181,45 +207,53 @@ updateProjectSelect()
 
      
 function buildTaskInterface() {
-    for (let i = 0; i < tasksAdded.length; i++) {
-        console.log("function called")
-  
-        const taskContainer = document.createElement("div")
-        taskContainer.setAttribute('id', tasksAdded[i].id)
-        taskContainer.setAttribute('class', 'rainbow-box')
-        const par1 = document.createElement("p")
-        const par2 = document.createElement("p")
-        const par3 = document.createElement("p")
-        const par4 = document.createElement("p");
-        const par5 = document.createElement("p")
+    notes.innerHTML = "";
 
-        par1.innerText = "Task title: " + tasksAdded[i].title;
-        par2.innerText = "Description: " + tasksAdded[i].description;
-        par3.innerText = "Priority: " + tasksAdded[i].priority;
-        par5.innerText = "Due by: " + tasksAdded[i].dueDate;
-        par4.setAttribute('id', `p-${i}`)
-        taskContainer.append(par1, par2, par3, par4, par5) 
-        
-
-        const priorityButton = document.createElement("button");
-        priorityButton.textContent = "change priority"
-
-        if (tasksAdded[i].complete == true) {
-            par4.innerText = "Completed" }
-        else {
-            par4.innerText = "Incomplete"
-            const completeButton = document.createElement("button");
-            completeButton.textContent = "Mark as Complete"
-            completeButton.setAttribute('id', tasksAdded[i].id)
-            completeButton.addEventListener('click', (e) => {
-                tasksAdded[i].markComplete(e)
-                par4.innerText = "Completed"
-                completeButton.remove()
-            })
-            taskContainer.appendChild(completeButton)
+    if (tasksAdded.length === 0) {
+        notes.innerText = "No Tasks to display"
     }
-    notes.appendChild(taskContainer)
-}
+    else {
+        for (let i = 0; i < tasksAdded.length; i++) {
+            console.log("function called")
+
+            const taskContainer = document.createElement("div")
+            taskContainer.setAttribute('id', tasksAdded[i].id)
+            taskContainer.setAttribute('class', 'rainbow-box')
+            const par1 = document.createElement("h1")
+            const par2 = document.createElement("p")
+            const par3 = document.createElement("p")
+            const par4 = document.createElement("p");
+            const par5 = document.createElement("p")
+            par1.insertAdjacentHTML('afterbegin', '<b><u>' + tasksAdded[i].title + '</b></u>');
+            par2.innerText = tasksAdded[i].description;
+            par2.setAttribute('class', 'description-box')
+            par3.innerText = "Priority: " + tasksAdded[i].priority;
+            par5.innerText = "Due: " + tasksAdded[i].dueDate;
+            par4.setAttribute('id', `p-${i}`)
+            taskContainer.append(par1, par2, par3, par4, par5) 
+
+
+            const priorityButton = document.createElement("button");
+            priorityButton.textContent = "change priority"
+
+            if (tasksAdded[i].complete == true) {
+                par4.innerText = "Completed" }
+            else {
+                par4.innerText = "Incomplete"
+                const completeButton = document.createElement("button");
+                completeButton.textContent = "Mark as Complete"
+                completeButton.setAttribute('class', 'submit-btn')
+                completeButton.setAttribute('id', tasksAdded[i].id)
+                completeButton.addEventListener('click', (e) => {
+                    tasksAdded[i].markComplete(e)
+                    par4.innerText = "Completed"
+                    completeButton.remove()
+                })
+                taskContainer.appendChild(completeButton)
+            }
+            notes.appendChild(taskContainer)
+        }
+    }
 }
 
 showTasks.addEventListener('click', buildTaskInterface)
@@ -230,6 +264,3 @@ submitItem.addEventListener('click', itemInputToObject.bind(event))
 submitProject.addEventListener('click', projectInputToObject.bind(event))    
 
 
-
-
-// projectList.addEventListener('click', listProjects)
