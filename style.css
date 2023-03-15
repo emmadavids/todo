@@ -2,7 +2,7 @@
 /* CSS */
 * {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: medium;
+    /* font-size: medium; */
 }
 
 body {
@@ -13,10 +13,15 @@ body {
 
 }
 
+.sidebar h1 {
+  font-size: 24px !important;
+}
+
 
 .button-85 {
   padding: 0.6em 2em;
   margin: 10px;
+  font-size: medium;
   border: none;
   width: 70%;
   outline: none;
@@ -71,24 +76,39 @@ body {
   }
 }
 
-.pp {
-    margin-top: 424px;
-}
 .project-list-item {
     margin: 10px;
+    font-size: 1.5em;
 }
+
+
+.project-list-item {
+  cursor: pointer;
+  color: white;
+}
+
+.project-list-item:hover {
+  text-transform: uppercase;
+  color:#48ff00;
+}
+
 .rainbow-box {
     background-color: black;
     border: 5px solid transparent;
     padding: 15px;
     border-image: linear-gradient(to bottom right, #b827fc 0%, #2c90fc 25%, #b8fd33 50%, #fec837 75%, #fd1892 100%);
     border-image-slice: 1;
-    height: 270px;
-    margin: 20px auto;
-    
-    float:left;
+    height: 260px;
+    margin: 15px;
+    display: inline-block;
     width: calc(33.33% - 40px);
   }
+
+.description-box {
+  background-color: #222;
+  padding: 5px;
+  display: inline-block;
+}
 
 .button-85:after {
   z-index: -1;
@@ -102,11 +122,20 @@ body {
   border-radius: 10px;
 }
 
+.form-row {
+  margin-bottom: 15px;
+  display: flex;
+ 
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap:10px;
+}
 .item-form-container, .project-form-container {
     display: none;
     margin-top: 40px;
   
 }
+
 
 .item-form-container {
     margin-left: 25px;
