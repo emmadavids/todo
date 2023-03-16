@@ -1,4 +1,5 @@
 
+//selecting various dom elements, assigning some buttons
 const notes = document.querySelector('.notes')
 const formBtn = document.querySelector('.form-btn')
 const submitItem = document.querySelector('.item-sub-btn')
@@ -8,13 +9,117 @@ const formItem = document.querySelector('.item-form-container')
 const formProj = document.querySelector('.project-form-container')
 const mainBit = document.querySelector('.main')
 const tasksHolder = document.querySelector('.tasks-holder')
-const tasksAdded = []
-const projectsAdded = [{title: "Misc", tasks: []} ]
-// const projectList = document.querySelector('.list-project')
 const sideBar = document.querySelector('.sidebar')
 const showTasks = document.querySelector('.show-tasks')
+const projects = document.querySelector('.optional-projects')    
+const sel = document.createElement("select")
+sel.classList.add("select-project")
+const titleInput = document.querySelector('#title');
+const descriptionInput = document.querySelector('#description');
 
 
+showTasks.addEventListener('click', buildTaskInterface)
+submitItem.addEventListener('click', itemInputToObject.bind(event))    
+submitProject.addEventListener('click', projectInputToObject.bind(event))    
+formBtn.addEventListener('click', toggleItemForm)
+addProject.addEventListener('click', toggleProjectForm)
+
+
+const tasksAdded = []
+const projectsAdded = [{title: "Misc", tasks: []} ]
+
+
+
+//classes 
+
+function createProject(title) {
+    return {
+        title: title,
+        tasks: [], 
+    }
+}
+
+function createTask(title, description, dueDate, priority, project) {
+    return {
+        title: title,
+        description: description,
+        dueDate: dueDate,
+        priority: priority,
+        project: project,
+        complete: false,
+        id: idGenerator(),
+        markComplete() {
+            this.complete = true;
+        },
+        changePriority(newPriority) {
+            this.priority = newPriority;
+        }
+        };
+      }    
+
+
+
+// function to add unique ID to tasks
+
+let counter = 0
+function idGenerator() {
+    counter += 1;
+    return counter 
+}
+
+
+//functions to handle form data 
+
+function projectInputToObject(e) {
+    e.preventDefault();
+    const output_info = document.querySelector(".project-form");
+    const projectData = output_info.querySelector("input:not([type=submit]), select");
+    if (projectData.value.trim() == "")
+    {
+        alert('please add a project title')
+        return; 
+    }
+    const newProject = createProject(projectData.value)
+    projectsAdded.push(newProject)
+    updateProjectSelect(newProject)
+    formProj.style.display = "none";
+    listProjects(newProject)
+    
+}
+
+
+
+function itemInputToObject(e) {
+    e.preventDefault();
+    const output_info = document.querySelector(".item-form");
+    const data = [...output_info.querySelectorAll("input:not([type=submit]), select")].map((item) => item.cloneNode(true));
+    const x = document.getElementById("priority");
+    const selectProject = document.querySelector('.select-project')
+    const value = x.value;
+    if (data[0].value.trim() === '' || data[1].value.trim() == "" || data[2].value.trim() == "") {
+        alert('please fill in all form values u dunderhead')
+        return; 
+    }
+ 
+    createItem(data[0].value, data[1].value, data[2].value, value, selectProject.value)
+    formItem.style.display = "none";
+    const taskAdded = document.createElement("p")
+    mainBit.appendChild(taskAdded) 
+    
+}
+
+
+function createItem(title, description, dueDate, priority, project) {
+    const task = createTask(title, description, dueDate, priority, project)
+    console.log("newly created task" + task.title)
+    const projectSelected = projectsAdded.find(element => element.title == project)
+    projectSelected.tasks.push(task)
+    tasksAdded.push(task)
+    buildTaskInterface() 
+
+}
+
+//UI
 
 function toggleItemForm() {
     notes.innerText = " "
@@ -37,7 +142,6 @@ function toggleProjectForm() {
         formItem.style.display = "none";
   }
 }
-
 
 
 function listProjects(element) {
@@ -66,8 +170,7 @@ function listProjects(element) {
             const taskContainer = buildTaskInterface(task);
             taskList.appendChild(taskContainer);
           });
-       
-        //   taskList.appendChild(taskItem);
+    
   
         taskListDiv.appendChild(taskList);
       }
@@ -80,85 +183,6 @@ function listProjects(element) {
 
 listProjects(projectsAdded[0])
 
-
-
-formBtn.addEventListener('click', toggleItemForm)
-addProject.addEventListener('click', toggleProjectForm)
-
-function createProject(title) {
-    return {
-        title: title,
-        tasks: [], 
-    }
-}
-
-
-function createItem(title, description, dueDate, priority, project) {
-    const task = createTask(title, description, dueDate, priority, project)
-    console.log("newly created task" + task.title)
-    const projectSelected = projectsAdded.find(element => element.title == project)
-    projectSelected.tasks.push(task)
-    tasksAdded.push(task)
-    buildTaskInterface() 
-
-}
-
-let counter = 0
-function idGenerator() {
-    counter += 1;
-    return counter 
-}
-
-function createTask(title, description, dueDate, priority, project) {
-    return {
-        title: title,
-        description: description,
-        dueDate: dueDate,
-        priority: priority,
-        project: project,
-        complete: false,
-        id: idGenerator(),
-        markComplete() {
-            this.complete = true;
-        }
-        };
-      }    
-
-function projectInputToObject(e) {
-    e.preventDefault();
-    const output_info = document.querySelector(".project-form");
-    const projectData = output_info.querySelector("input:not([type=submit]), select");
-    console.log("project data", projectData.value)
-    const newProject = createProject(projectData.value)
-    projectsAdded.push(newProject)
-    updateProjectSelect(newProject)
-    formProj.style.display = "none";
-    listProjects(newProject)
-    
-}
-
-
-function itemInputToObject(e) {
-    e.preventDefault();
-    const output_info = document.querySelector(".item-form");
-    const data = [...output_info.querySelectorAll("input:not([type=submit]), select")].map((item) => item.cloneNode(true));
-    const x = document.getElementById("priority");
-    const selectProject = document.querySelector('.select-project')
-    const value = x.value;
-    createItem(data[0].value, data[1].value, data[2].value, value, selectProject.value)
-    formItem.style.display = "none";
-    const taskAdded = document.createElement("p")
-    mainBit.appendChild(taskAdded)
-}
-
-
-const projects = document.querySelector('.optional-projects')    
-const sel = document.createElement("select")
-sel.classList.add("select-project")
-
-
-
-//user interface 
 
 function updateProjectSelect() { 
     
@@ -175,86 +199,7 @@ function updateProjectSelect() {
 }
 
 
-const innercont = document.createElement("div")
-
-
-
-function displayTasks() {
-    
-    tasksAdded.forEach(element => console.log(element.title))
-
-}
-function displayProjects() {
-    toggleItemForm() 
-    for (let i = 0; i < projectsAdded.length; i++) {
-        innercont.text = " "
-        const card = document.createElement('div');
-        card.setAttribute('id', `card-${i}`) // assigns each card a unique id
-        card.className = "card"
-        const par1 = document.createElement("p")
-        const par2 = document.createElement("p")  
-        const projectTasks = projectsAdded[i].tasks.map(element => element.title)
-        par1.innerText = "Tasks associated with project: " + projectTasks;
-        par2.innerText = "Project Title: " + projectsAdded[i].title; 
-        innercont.append(par1, par2) 
-        notes.appendChild(innercont)
-        console.log(tasksAdded)
-      }
-    }
-
-// displayProjects()    
 updateProjectSelect()
-
-
-// function buildTaskInterface() {
-//     notes.innerHTML = "";
-
-//     if (tasksAdded.length === 0) {
-//         notes.innerText = "No Tasks to display"
-//     }
-//     else {
-//         for (let i = 0; i < tasksAdded.length; i++) {
-//             console.log("function called")
-
-//             const taskContainer = document.createElement("div")
-//             taskContainer.setAttribute('id', tasksAdded[i].id)
-//             taskContainer.setAttribute('class', 'rainbow-box')
-//             const par1 = document.createElement("h1")
-//             const par2 = document.createElement("p")
-//             const par3 = document.createElement("p")
-//             const par4 = document.createElement("p");
-//             const par5 = document.createElement("p")
-//             par1.insertAdjacentHTML('afterbegin', '<b><u>' + tasksAdded[i].title + '</b></u>');
-//             par2.innerText = tasksAdded[i].description;
-//             par2.setAttribute('class', 'description-box')
-//             par3.innerText = "Priority: " + tasksAdded[i].priority;
-//             par5.innerText = "Due: " + tasksAdded[i].dueDate;
-//             par4.setAttribute('id', `p-${i}`)
-//             taskContainer.append(par1, par2, par3, par4, par5) 
-
-
-//             const priorityButton = document.createElement("button");
-//             priorityButton.textContent = "change priority"
-
-//             if (tasksAdded[i].complete == true) {
-//                 par4.innerText = "Completed" }
-//             else {
-//                 par4.innerText = "Incomplete"
-//                 const completeButton = document.createElement("button");
-//                 completeButton.textContent = "Mark as Complete"
-//                 completeButton.setAttribute('class', 'submit-btn')
-//                 completeButton.setAttribute('id', tasksAdded[i].id)
-//                 completeButton.addEventListener('click', (e) => {
-//                     tasksAdded[i].markComplete(e)
-//                     par4.innerText = "Completed"
-//                     completeButton.remove()
-//                 })
-//                 taskContainer.appendChild(completeButton)
-//             }
-//             notes.appendChild(taskContainer)
-//         }
-//     }
-// }
 
 
 function buildTaskInterface(project) {
@@ -271,12 +216,12 @@ function buildTaskInterface(project) {
     }
     else {
       for (let i = 0; i < tasksToDisplay.length; i++) {
+
         console.log("function called")
-  
         const taskContainer = document.createElement("div")
         taskContainer.setAttribute('id', tasksToDisplay[i].id)
         taskContainer.setAttribute('class', 'rainbow-box')
-        const par1 = document.createElement("h1")
+        const par1 = document.createElement("h3")
         const par2 = document.createElement("p")
         const par3 = document.createElement("p")
         const par4 = document.createElement("p");
@@ -285,39 +230,44 @@ function buildTaskInterface(project) {
         par2.innerText = tasksToDisplay[i].description;
         par2.setAttribute('class', 'description-box')
         par3.innerText = "Priority: " + tasksToDisplay[i].priority;
+        par3.setAttribute('class', 'priority')
         par5.innerText = "Due: " + tasksToDisplay[i].dueDate;
         par4.setAttribute('id', `p-${i}`)
-        taskContainer.append(par1, par2, par3, par4, par5) 
-  
-  
         const priorityButton = document.createElement("button");
+        priorityButton.setAttribute('class', 'priority')
         priorityButton.textContent = "change priority"
+        priorityButton.addEventListener('click', changePriorityUI(tasksToDisplay[i].id))
+        taskContainer.append(par1, par2, par3, priorityButton, par4, par5) 
   
-        if (tasksToDisplay[i].complete == true) {
-          par4.innerText = "Completed" }
-        else {
-          par4.innerText = "Incomplete"
-          const completeButton = document.createElement("button");
-          completeButton.textContent = "Mark as Complete"
-          completeButton.setAttribute('class', 'submit-btn')
-          completeButton.setAttribute('id', tasksToDisplay[i].id)
-          completeButton.addEventListener('click', (e) => {
+        par4.innerText = "Incomplete"
+        const completeButton = document.createElement("button");
+        completeButton.textContent = "Mark as Complete"
+        completeButton.setAttribute('class', 'complete')
+
+        completeButton.setAttribute('id', tasksToDisplay[i].id)
+        completeButton.addEventListener('click', (e) => {
             tasksToDisplay[i].markComplete(e)
             par4.innerText = "Completed"
             completeButton.remove()
           })
-          taskContainer.appendChild(completeButton)
-        }
+        //   taskContainer.appendChild(completeButton)
+          taskContainer.append(par1, par2, par3, priorityButton, par4, completeButton, par5) 
+    
         notes.appendChild(taskContainer)
       }
     }
   }
 
-showTasks.addEventListener('click', buildTaskInterface)
+  function changePriorityUI(task) { //bring up a new select form of low med hi, save that on the class 
+    // const savePriority = document.createElement("button");
+    // savePriorityaddEventListener('click' (e) => {
+    //     task.priority = newpriority //needs finishing
+    // }).
+  }
 
 
-
-submitItem.addEventListener('click', itemInputToObject.bind(event))    
-submitProject.addEventListener('click', projectInputToObject.bind(event))    
-
-
+//ways this code could be improved: 
+// 1. one function that toggles between different form views, taking a selected dom element as a parameter 
+// 2. separating the build task UI function out into one that builds an individual card and a function that filters out tasks as necessary (the former could call the latter)
+// 3. the complete button in the build task ui function could be its own function probably. 
+// 4. create a module for handling project-related functions, another for handling task-related functions, and another for handling user-related functions.
