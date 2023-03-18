@@ -230,13 +230,17 @@ function buildTaskInterface(project) {
         par2.innerText = tasksToDisplay[i].description;
         par2.setAttribute('class', 'description-box')
         par3.innerText = "Priority: " + tasksToDisplay[i].priority;
-        par3.setAttribute('class', 'priority')
+     
+        par3.setAttribute('class', `pr-${tasksToDisplay[i].id}`)
         par5.innerText = "Due: " + tasksToDisplay[i].dueDate;
-        par4.setAttribute('id', `p-${i}`)
+        par4.setAttribute('id', `p-${tasksToDisplay[i].id}`)
         const priorityButton = document.createElement("button");
-        priorityButton.setAttribute('class', 'priority')
+
+        priorityButton.setAttribute('class', 'priority-btn')
+        priorityButton.setAttribute('class', `pr-${tasksToDisplay[i].id}`)
         priorityButton.textContent = "change priority"
-        priorityButton.addEventListener('click', changePriorityUI(tasksToDisplay[i].id))
+        priorityButton.addEventListener('click', function() { changePriorityUI(tasksToDisplay[i]) })
+     
         taskContainer.append(par1, par2, par3, priorityButton, par4, par5) 
   
         par4.innerText = "Incomplete"
@@ -258,12 +262,44 @@ function buildTaskInterface(project) {
     }
   }
 
-  function changePriorityUI(task) { //bring up a new select form of low med hi, save that on the class 
-    // const savePriority = document.createElement("button");
-    // savePriorityaddEventListener('click' (e) => {
-    //     task.priority = newpriority //needs finishing
-    // }).
+
+function changePriorityUI(task) {
+
+    console.log("task id", task.id)
+    const priorities = ["Low", "Medium", "High"];
+  
+    const select = document.createElement("select"); 
+   
+    for (priority in priorities) {
+        let option = document.createElement("option");
+        option.setAttribute('value', priorities[priority]);
+        select.append(option)
+    }
+    
+    select.addEventListener("change", (event) => {
+      task.priority = event.target.value;
+      task.save(); 
+      priorityElements.forEach(element => {
+        element.style.display = "block";
+      
+      });
+    });
+ //need to append the select element somewhere but where
+ 
+    const priorityElements = document.querySelectorAll(`pr-${task.id}`);
+    priorityElements.forEach(element => {
+        element.style.display = "none";
+        
+      });
+ 
   }
+
+  
+  
+  
+  
+  
+  
 
 
 //ways this code could be improved: 
