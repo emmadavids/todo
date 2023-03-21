@@ -27,7 +27,7 @@ addProject.addEventListener('click', toggleProjectForm)
 
 const tasksAdded = []
 const projectsAdded = [{title: "Misc", tasks: []} ]
-
+const completedTasks = []
 
 
 //classes 
@@ -236,23 +236,25 @@ function buildTaskInterface(project) {
         par4.setAttribute('id', `p-${tasksToDisplay[i].id}`)
         const priorityButton = document.createElement("button");
 
-        priorityButton.setAttribute('class', 'priority-btn')
-        priorityButton.setAttribute('class', `pr-${tasksToDisplay[i].id}`)
+        priorityButton.classList.add('priority-btn', `pr-${tasksToDisplay[i].id}`);
         priorityButton.textContent = "change priority"
-        priorityButton.addEventListener('click', function() { changePriorityUI(tasksToDisplay[i]) })
+        priorityButton.addEventListener('click', function() { changePriorityUI(tasksToDisplay[i], taskContainer, par3, priorityButton) 
+        priorityButton.style.display = "none" } )
      
         taskContainer.append(par1, par2, par3, priorityButton, par4, par5) 
   
         par4.innerText = "Incomplete"
         const completeButton = document.createElement("button");
-        completeButton.textContent = "Mark as Complete"
+        completeButton.textContent = "Mark Complete"
         completeButton.setAttribute('class', 'complete')
 
         completeButton.setAttribute('id', tasksToDisplay[i].id)
         completeButton.addEventListener('click', (e) => {
             tasksToDisplay[i].markComplete(e)
-            par4.innerText = "Completed"
-            completeButton.remove()
+            // par4.innerText = "Completed"
+            // completeButton.remove()
+            completedTasks.push(tasksToDisplay[i])
+            taskContainer.remove()
           })
         //   taskContainer.appendChild(completeButton)
           taskContainer.append(par1, par2, par3, priorityButton, par4, completeButton, par5) 
@@ -263,38 +265,39 @@ function buildTaskInterface(project) {
   }
 
 
-function changePriorityUI(task) {
-
+  function changePriorityUI(task, taskContainer, par3, priorityButton) {
     console.log("task id", task.id)
     const priorities = ["Low", "Medium", "High"];
-  
-    const select = document.createElement("select"); 
-   
-    for (priority in priorities) {
+
+    const select = document.createElement("select");
+    for (const priority of priorities) {
         let option = document.createElement("option");
-        option.setAttribute('value', priorities[priority]);
+        option.setAttribute('value', priority);
+        option.textContent = priority;
         select.append(option)
     }
-    
+
     select.addEventListener("change", (event) => {
-      task.priority = event.target.value;
-      task.save(); 
-      priorityElements.forEach(element => {
-        element.style.display = "block";
-      
-      });
+        task.changePriority(event.target.value);
+        console.log("event target " + event.target)
+        par3.textContent = "Priority: " + event.target.value
+        priorityElements.forEach(element => {
+            element.style.display = "block";
+        });
+        select.style.display = "none";
+        priorityButton.style.display = "block";
     });
- //need to append the select element somewhere but where
- 
-    const priorityElements = document.querySelectorAll(`pr-${task.id}`);
+
+    taskContainer.insertBefore(select, priorityButton.nextSibling);
+
+    const priorityElements = document.querySelectorAll(`.pr-${task.id}`);
     priorityElements.forEach(element => {
         element.style.display = "none";
-        
-      });
- 
-  }
+    });
 
-  
+    select.style.display = "block";
+    priorityButton.style.display = "none";
+}
   
   
   
@@ -307,3 +310,4 @@ function changePriorityUI(task) {
 // 2. separating the build task UI function out into one that builds an individual card and a function that filters out tasks as necessary (the former could call the latter)
 // 3. the complete button in the build task ui function could be its own function probably. 
 // 4. create a module for handling project-related functions, another for handling task-related functions, and another for handling user-related functions.
+// 5. think in advance what parts of the UI will need to be toggled and untoggled, sketch these out 
