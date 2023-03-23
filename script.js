@@ -202,67 +202,83 @@ function updateProjectSelect() {
 updateProjectSelect()
 
 
+
 function buildTaskInterface(project) {
-    notes.innerHTML = "";
-  
-    let tasksToDisplay = tasksAdded;
-  
-    if (project) {
-      tasksToDisplay = tasksAdded.filter(task => task.project === project.title);
-    }
-  
-    if (tasksToDisplay.length === 0) {
-      notes.innerText = "No Tasks to display"
-    }
-    else {
-      for (let i = 0; i < tasksToDisplay.length; i++) {
+  notes.innerHTML = "";
 
-        console.log("function called")
-        const taskContainer = document.createElement("div")
-        taskContainer.setAttribute('id', tasksToDisplay[i].id)
-        taskContainer.setAttribute('class', 'rainbow-box')
-        const par1 = document.createElement("h3")
-        const par2 = document.createElement("p")
-        const par3 = document.createElement("p")
-        const par4 = document.createElement("p");
-        const par5 = document.createElement("p")
-        par1.insertAdjacentHTML('afterbegin', '<b><u>' + tasksToDisplay[i].title + '</b></u>');
-        par2.innerText = tasksToDisplay[i].description;
-        par2.setAttribute('class', 'description-box')
-        par3.innerText = "Priority: " + tasksToDisplay[i].priority;
-     
-        par3.setAttribute('class', `pr-${tasksToDisplay[i].id}`)
-        par5.innerText = "Due: " + tasksToDisplay[i].dueDate;
-        par4.setAttribute('id', `p-${tasksToDisplay[i].id}`)
-        const priorityButton = document.createElement("button");
+  let tasksToDisplay = tasksAdded;
 
-        priorityButton.classList.add('priority-btn', `pr-${tasksToDisplay[i].id}`);
-        priorityButton.textContent = "change priority"
-        priorityButton.addEventListener('click', function() { changePriorityUI(tasksToDisplay[i], taskContainer, par3, priorityButton) 
-        priorityButton.style.display = "none" } )
-     
-        taskContainer.append(par1, par2, par3, priorityButton, par4, par5) 
-  
-        par4.innerText = "Incomplete"
-        const completeButton = document.createElement("button");
-        completeButton.textContent = "Mark Complete"
-        completeButton.setAttribute('class', 'complete')
+  if (project) {
+    tasksToDisplay = tasksAdded.filter(task => task.project === project.title);
+  }
 
-        completeButton.setAttribute('id', tasksToDisplay[i].id)
-        completeButton.addEventListener('click', (e) => {
-            tasksToDisplay[i].markComplete(e)
-            // par4.innerText = "Completed"
-            // completeButton.remove()
-            completedTasks.push(tasksToDisplay[i])
-            taskContainer.remove()
-          })
-        //   taskContainer.appendChild(completeButton)
-          taskContainer.append(par1, par2, par3, priorityButton, par4, completeButton, par5) 
-    
-        notes.appendChild(taskContainer)
-      }
+  if (tasksToDisplay.length === 0) {
+    notes.innerText = "No Tasks to display"
+  }
+  else {
+    for (let i = 0; i < tasksToDisplay.length; i++) {
+      const taskContainer = createTaskContainer(tasksToDisplay[i]);
+      const completeButton = createCompleteButton(tasksToDisplay[i], taskContainer);
+      
+      taskContainer.appendChild(completeButton);
+      notes.appendChild(taskContainer);
     }
   }
+}
+
+function createTaskContainer(task) {
+  const taskContainer = document.createElement("div");
+  taskContainer.setAttribute('id', task.id);
+  taskContainer.setAttribute('class', 'rainbow-box');
+
+  const par1 = document.createElement("h3");
+  const par2 = document.createElement("p");
+  const par3 = document.createElement("p");
+  const par4 = document.createElement("p");
+  const par5 = document.createElement("p");
+
+  par1.insertAdjacentHTML('afterbegin', '<b><u>' + task.title + '</b></u>');
+  par2.innerText = task.description;
+  par2.setAttribute('class', 'description-box');
+  par3.innerText = "Priority: " + task.priority;
+  par3.setAttribute('class', `pr-${task.id}`);
+  par5.innerText = "Due: " + task.dueDate;
+  par4.setAttribute('id', `p-${task.id}`);
+
+  const priorityButton = createPriorityButton(task, taskContainer, par3);
+
+  taskContainer.append(par1, par2, par3, priorityButton, par4, par5);
+
+  par4.innerText = "Incomplete";
+
+  return taskContainer;
+}
+
+
+function createPriorityButton(task) {
+  const priorityButton = document.createElement("button");
+  priorityButton.classList.add('priority-btn', `pr-${task.id}`);
+  priorityButton.textContent = "change priority";
+  priorityButton.addEventListener('click', function() {
+    changePriorityUI(task);
+    priorityButton.style.display = "none";
+  });
+  return priorityButton;
+}
+
+function createCompleteButton(task, taskContainer, notesContainer) {
+  const completeButton = document.createElement("button");
+  completeButton.textContent = "Mark Complete";
+  completeButton.setAttribute('class', 'complete');
+  completeButton.setAttribute('id', task.id);
+  completeButton.addEventListener('click', (e) => {
+    task.markComplete(e);
+    alert("Added to archived tasks");
+    completedTasks.push(task);
+    taskContainer.remove();
+  });
+  return completeButton;
+}
 
 
   function changePriorityUI(task, taskContainer, par3, priorityButton) {
