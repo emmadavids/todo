@@ -271,12 +271,11 @@ function createTaskContainer(task) {
 }
 
 
-function createPriorityButton(task) {
+function createPriorityButton(task, taskContainer) {
   const priorityButton = document.createElement("button");
-  priorityButton.classList.add('priority-btn', `pr-${task.id}`);
   priorityButton.textContent = "change priority";
   priorityButton.addEventListener('click', function() {
-    changePriorityUI(task);
+    changePriorityUI(task, taskContainer, par3, priorityButton);
     priorityButton.style.display = "none";
   });
   return priorityButton;
