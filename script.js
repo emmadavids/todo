@@ -16,13 +16,21 @@ const sel = document.createElement("select")
 sel.classList.add("select-project")
 const titleInput = document.querySelector('#title');
 const descriptionInput = document.querySelector('#description');
+const showArchived = document.querySelector('.archive-btn')
 
 
-showTasks.addEventListener('click', buildTaskInterface)
+showArchived.addEventListener('click', function() {
+  buildTaskInterface(null, "complete");
+});
+
+showTasks.addEventListener('click', function() {
+  buildTaskInterface(null, "incomplete");
+});
 submitItem.addEventListener('click', itemInputToObject.bind(event))    
 submitProject.addEventListener('click', projectInputToObject.bind(event))    
 formBtn.addEventListener('click', toggleItemForm)
 addProject.addEventListener('click', toggleProjectForm)
+
 
 
 const tasksAdded = []
@@ -115,7 +123,8 @@ function createItem(title, description, dueDate, priority, project) {
     const projectSelected = projectsAdded.find(element => element.title == project)
     projectSelected.tasks.push(task)
     tasksAdded.push(task)
-    buildTaskInterface() 
+    console.log("is this task complete?", task.complete)
+    buildTaskInterface(null, "incomplete") 
 
 }
 
@@ -167,7 +176,7 @@ function listProjects(element) {
       } else {
         const taskList = document.createElement("ul");
         tasks.forEach((task) => {
-            const taskContainer = buildTaskInterface(task);
+            const taskContainer = buildTaskInterface(element, task);
             taskList.appendChild(taskContainer);
           });
     
@@ -203,19 +212,26 @@ updateProjectSelect()
 
 
 
-function buildTaskInterface(project) {
+function buildTaskInterface(project, status) {
   notes.innerHTML = "";
 
   let tasksToDisplay = tasksAdded;
-
+  console.log("tasksToDisplay", tasksToDisplay)
   if (project) {
     tasksToDisplay = tasksAdded.filter(task => task.project === project.title);
   }
 
-  if (tasksToDisplay.length === 0) {
-    notes.innerText = "No Tasks to display"
+  if (status === "complete") {
+    tasksToDisplay = completedTasks;
+   
+  } else  {
+     tasksToDisplay = tasksToDisplay.filter(task => !task.complete);
+     
   }
-  else {
+    console.log("tasksToDisplay", tasksToDisplay)
+  if (tasksToDisplay.length === 0) {
+    notes.innerText = "No tasks to display";
+  } else {
     for (let i = 0; i < tasksToDisplay.length; i++) {
       const taskContainer = createTaskContainer(tasksToDisplay[i]);
       const completeButton = createCompleteButton(tasksToDisplay[i], taskContainer);
@@ -266,7 +282,11 @@ function createPriorityButton(task) {
   return priorityButton;
 }
 
-function createCompleteButton(task, taskContainer, notesContainer) {
+function createCompleteButton(task, taskContainer) {
+  if (task.complete) {
+    return null;
+  }
+
   const completeButton = document.createElement("button");
   completeButton.textContent = "Mark Complete";
   completeButton.setAttribute('class', 'complete');
@@ -279,6 +299,7 @@ function createCompleteButton(task, taskContainer, notesContainer) {
   });
   return completeButton;
 }
+
 
 
   function changePriorityUI(task, taskContainer, par3, priorityButton) {
