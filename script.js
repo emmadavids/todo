@@ -192,51 +192,46 @@ function listProjects(element) {
 
 listProjects(projectsAdded[0])
 
+function updateProjectSelect() {
+  projects.textContent = "Add to project?";
+  projects.appendChild(sel);
 
-function updateProjectSelect() { 
-    
-        projects.textContent = "Add to project?"
-        projects.appendChild(sel)
-        let projectNames = []
-    
-        for (let i = 0; i < projectsAdded.length; i++) {
-                projectNames[i] = document.createElement("option")
-                projectNames[i].text = projectsAdded[i].title
-                sel.appendChild(projectNames[i])
-        }    
-  
+  const projectNames = projectsAdded.map((project) => project.title);
+
+  for (let i = 0; i < projectNames.length; i++) {
+    const projectName = projectNames[i];
+    if (!sel.querySelector(`option[value="${projectName}"]`)) {
+      const option = document.createElement("option");
+      option.value = projectName;
+      option.text = projectName;
+      sel.appendChild(option);
+    }
+  }
 }
 
-
 updateProjectSelect()
-
 
 
 function buildTaskInterface(project, status) {
   notes.innerHTML = "";
 
   let tasksToDisplay = tasksAdded;
-  console.log("tasksToDisplay", tasksToDisplay)
+
   if (project) {
     tasksToDisplay = tasksAdded.filter(task => task.project === project.title);
   }
 
-  if (status === "complete") {
+  if (status === "incomplete") {
+    tasksToDisplay = tasksToDisplay.filter(task => !task.complete);
+  } else if (status === "completed") {
     tasksToDisplay = completedTasks;
-   
-  } else  {
-     tasksToDisplay = tasksToDisplay.filter(task => !task.complete);
-     
   }
-    console.log("tasksToDisplay", tasksToDisplay)
+
   if (tasksToDisplay.length === 0) {
     notes.innerText = "No tasks to display";
   } else {
     for (let i = 0; i < tasksToDisplay.length; i++) {
       const taskContainer = createTaskContainer(tasksToDisplay[i]);
-      const completeButton = createCompleteButton(tasksToDisplay[i], taskContainer);
-      
-      taskContainer.appendChild(completeButton);
       notes.appendChild(taskContainer);
     }
   }
@@ -265,21 +260,28 @@ function createTaskContainer(task) {
 
   taskContainer.append(par1, par2, par3, priorityButton, par4, par5);
 
-  par4.innerText = "Incomplete";
+  if (!task.complete) {
+    const completeButton = createCompleteButton(task, taskContainer);
+    taskContainer.appendChild(completeButton);
+  } else {
+    par4.innerText = "Complete";
+  }
 
   return taskContainer;
 }
 
 
-function createPriorityButton(task, taskContainer) {
+function createPriorityButton(task, taskContainer, par3) {
   const priorityButton = document.createElement("button");
   priorityButton.textContent = "change priority";
+  priorityButton.setAttribute('class', 'priority-btn')
   priorityButton.addEventListener('click', function() {
     changePriorityUI(task, taskContainer, par3, priorityButton);
     priorityButton.style.display = "none";
   });
   return priorityButton;
 }
+
 
 function createCompleteButton(task, taskContainer) {
   if (task.complete) {
@@ -298,6 +300,7 @@ function createCompleteButton(task, taskContainer) {
   });
   return completeButton;
 }
+
 
 
 
@@ -338,12 +341,3 @@ function createCompleteButton(task, taskContainer) {
   
   
   
-  
-
-
-//ways this code could be improved: 
-// 1. one function that toggles between different form views, taking a selected dom element as a parameter 
-// 2. separating the build task UI function out into one that builds an individual card and a function that filters out tasks as necessary (the former could call the latter)
-// 3. the complete button in the build task ui function could be its own function probably. 
-// 4. create a module for handling project-related functions, another for handling task-related functions, and another for handling user-related functions.
-// 5. think in advance what parts of the UI will need to be toggled and untoggled, sketch these out 
